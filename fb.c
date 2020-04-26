@@ -1292,15 +1292,15 @@ static void fb_cursor_free(struct FbCursor *fb_cursor)
 
 static VALUE sql_decimal_to_bigdecimal(long long sql_data, int scale)
 {
-	int  i;
+	unsigned long i;
 	char bigdecimal_buffer[23];
-	int  bigdecimal_dot;
+	unsigned long bigdecimal_dot;
 	sprintf(bigdecimal_buffer, "%022lld", sql_data);
 	bigdecimal_dot = strlen(bigdecimal_buffer) + scale;
 	for (i = strlen(bigdecimal_buffer); i > bigdecimal_dot; i--)
 		bigdecimal_buffer[i] = bigdecimal_buffer[i-1];
 	bigdecimal_buffer[bigdecimal_dot] = '.';
-	return rb_funcall(rb_path2class("BigDecimal"), rb_intern("new"), 1, rb_str_new2(bigdecimal_buffer));
+	return rb_funcall(rb_cObject, rb_intern("BigDecimal"), 1, rb_str_new2(bigdecimal_buffer));
 }
 
 static VALUE object_to_unscaled_bigdecimal(VALUE object, int scale)
@@ -1311,7 +1311,7 @@ static VALUE object_to_unscaled_bigdecimal(VALUE object, int scale)
 		ratio *= 10;
 	if (TYPE(object) == T_FLOAT)
 		object = rb_funcall(object, rb_intern("to_s"), 0);
-	object = rb_funcall(rb_path2class("BigDecimal"), rb_intern("new"), 1, object);
+	object = rb_funcall(rb_cObject, rb_intern("BigDecimal"), 1, object);
 	object = rb_funcall(object, rb_intern("*"), 1, LONG2NUM(ratio));
 	return rb_funcall(object, rb_intern("round"), 0);
 }
